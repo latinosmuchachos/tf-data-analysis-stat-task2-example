@@ -11,7 +11,12 @@ def solution(p: float, x: np.array) -> tuple:
     # Это будет вашим решением
     # Не меняйте название функции и её аргументы
     alpha = 1 - p
-    loc = x.mean()
-    scale = np.sqrt(np.var(x)) / np.sqrt(len(x))
-    return loc - scale * norm.ppf(1 - alpha / 2), \
-           loc - scale * norm.ppf(alpha / 2)
+    stat = (x ** 2).sum()
+    
+    left_edge_chi_squared = chi2.ppf(alpha / 2, 2 * len(x)) 
+    right_edge_chi_squared = chi2.ppf(1 - alpha / 2, 2 * len(x))
+    
+    left_edge_sigma = np.sqrt(stat / (31 * right_edge_chi_squared))
+    right_edge_sigma = np.sqrt(stat / (31 * left_edge_chi_squared))
+    
+    return (left_edge_sigma, right_edge_sigma)
